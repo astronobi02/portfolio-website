@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { useInView } from '../../hooks'
-import { personalInfo, skillCategories, techStack } from '../../data/portfolio'
+import { personalInfo, skillCategories, techStack } from './portfolio'
 import {
   SiReact, SiTypescript, SiNextdotjs, SiNodedotjs, SiPython,
   SiPostgresql, SiDocker, SiAmazonwebservices, SiFigma, SiGraphql,
