@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FiGithub, FiExternalLink, FiStar, FiGitBranch } from 'react-icons/fi'
 import { useInView } from '../../hooks'
-import { projects, projectFilters } from '../../data/portfolio'
+import { projects, projectFilters } from './portfolio'
 import { SectionLabel } from './About'
 
 export default function Projects() {
