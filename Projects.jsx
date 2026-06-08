@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FiGithub, FiExternalLink, FiStar, FiGitBranch } from 'react-icons/fi'
-import { useInView } from '../../hooks'
+import { useInView } from './hooks'
 import { projects, projectFilters } from './portfolio'
 import { SectionLabel } from './About'
 
