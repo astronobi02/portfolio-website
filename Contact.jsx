@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { FiSend, FiGithub, FiLinkedin, FiTwitter, FiMail, FiMapPin, FiCheck, FiAlertCircle } from 'react-icons/fi'
-import { useInView } from '../../hooks'
+import { useInView } from './hooks'
 import { personalInfo } from './portfolio'
 import { SectionLabel } from './About'
 
