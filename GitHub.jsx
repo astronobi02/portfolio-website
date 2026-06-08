@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { FiStar, FiUsers, FiBookOpen, FiGithub, FiExternalLink } from 'react-icons/fi'
-import { useInView, useGitHubStats } from '../../hooks'
-import { personalInfo } from '../../data/portfolio'
+import { useInView, useGitHubStats } from './hooks'
+import { personalInfo } from './portfolio'
 import { SectionLabel } from './About'
 
 const LANG_COLORS = {
