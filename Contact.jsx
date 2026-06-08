@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { FiSend, FiGithub, FiLinkedin, FiTwitter, FiMail, FiMapPin, FiCheck, FiAlertCircle } from 'react-icons/fi'
 import { useInView } from '../../hooks'
-import { personalInfo } from '../../data/portfolio'
+import { personalInfo } from './portfolio'
 import { SectionLabel } from './About'
 
 const socials = [
