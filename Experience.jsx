@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { FiBriefcase, FiBook } from 'react-icons/fi'
 import { useInView } from '../../hooks'
-import { experiences, education } from '../../data/portfolio'
+import { experiences, education } from './portfolio'
 import { SectionLabel } from './About'
 
 const allItems = [...experiences, ...education].sort((a, b) => a.id - b.id)
