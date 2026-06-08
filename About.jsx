@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { useInView } from '../../hooks'
+import { something } from './hooks'
 import { personalInfo, skillCategories, techStack } from './portfolio'
 import {
   SiReact, SiTypescript, SiNextdotjs, SiNodedotjs, SiPython,
