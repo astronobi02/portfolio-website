@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useMousePosition } from '../../hooks'
+import { useMousePosition } from './hooks'
 
 export default function CustomCursor() {
   const dotRef = useRef(null)
