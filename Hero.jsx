@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { FiGithub, FiLinkedin, FiTwitter, FiMail, FiArrowDown } from 'react-icons/fi'
-import { personalInfo } from '../../data/portfolio'
-import ParticleBackground from '../ui/ParticleBackground'
+import { personalInfo } from './portfolio'
+import ParticleBackground from './ParticleBackground'
 
 const socialLinks = [
   { icon: FiGithub, href: personalInfo.github, label: 'GitHub' },
