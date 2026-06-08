@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { FiBriefcase, FiBook } from 'react-icons/fi'
-import { useInView } from '../../hooks'
+import { useInView } from './hooks'
 import { experiences, education } from './portfolio'
 import { SectionLabel } from './About'
 
