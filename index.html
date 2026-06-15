@@ -221,22 +221,28 @@
     }
     .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
 
+    /* ───── HERO RIGHT — self-contained, no overflow ───── */
     .hero-right {
       display: flex;
       justify-content: center;
       align-items: center;
+      /* Give room for the stats cards that sit below-right */
+      padding-bottom: 60px;
+      padding-right: 60px;
     }
 
-    /* ───── AVATAR SYSTEM ───── */
     .hero-visual {
       position: relative;
-      width: 340px; height: 340px;
+      width: 300px;
+      height: 300px;
+      /* Ensure nothing bleeds outside this container into the left column */
+      flex-shrink: 0;
     }
 
-    /* Outer spinning orbit ring */
+    /* Orbit rings */
     .hero-avatar-ring {
       position: absolute;
-      inset: -24px;
+      inset: -20px;
       border-radius: 50%;
       border: 1px solid rgba(124,106,255,0.18);
       animation: spin 20s linear infinite;
@@ -252,16 +258,51 @@
       transform: translateX(-50%);
       box-shadow: 0 0 12px 3px rgba(124,106,255,0.7);
     }
-    /* Second subtle ring */
     .hero-avatar-ring2 {
       position: absolute;
-      inset: -44px;
+      inset: -38px;
       border-radius: 50%;
       border: 1px dashed rgba(124,106,255,0.08);
       animation: spin 35s linear infinite reverse;
       pointer-events: none;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Animated gradient border ring (shown after photo upload) */
+    .avatar-frame-ring {
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: conic-gradient(
+        var(--accent) 0deg,
+        var(--accent2) 120deg,
+        var(--accent3) 240deg,
+        var(--accent) 360deg
+      );
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 0.5s;
+      animation: spin 6s linear infinite;
+      pointer-events: none;
+    }
+    .avatar-frame-ring.visible { opacity: 1; }
+    .avatar-frame-ring::after {
+      content: '';
+      position: absolute;
+      inset: 3px;
+      border-radius: 50%;
+      background: var(--bg2);
+    }
+
+    /* Ambient glow */
+    .avatar-glow {
+      position: absolute;
+      inset: -50px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(124,106,255,0.12) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: -1;
+    }
 
     /* Main avatar circle */
     .hero-avatar {
@@ -274,34 +315,19 @@
       justify-content: center;
       position: relative;
       overflow: hidden;
-      cursor: pointer;
-      transition: border-color 0.3s, box-shadow 0.3s;
       box-shadow:
         0 0 0 1px rgba(124,106,255,0.1),
         inset 0 0 60px rgba(124,106,255,0.05);
+      z-index: 1;
     }
-    .hero-avatar:hover {
-      border-color: rgba(124,106,255,0.5);
-      box-shadow:
-        0 0 0 1px rgba(124,106,255,0.3),
-        0 0 40px rgba(124,106,255,0.15),
-        inset 0 0 60px rgba(124,106,255,0.08);
+    .hero-avatar.has-photo {
+      border-color: transparent;
     }
 
-    /* Ambient glow behind avatar */
-    .avatar-glow {
-      position: absolute;
-      inset: -60px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(124,106,255,0.12) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    /* SP initials (shown when no photo) */
+    /* SP initials */
     .avatar-initials {
       font-family: var(--font-head);
-      font-size: 88px;
+      font-size: 72px;
       font-weight: 800;
       color: var(--accent);
       letter-spacing: -4px;
@@ -312,7 +338,7 @@
       text-shadow: 0 0 40px rgba(124,106,255,0.4);
     }
 
-    /* Uploaded photo */
+    /* Photo display */
     .avatar-photo {
       position: absolute;
       inset: 0;
@@ -326,119 +352,238 @@
     }
     .avatar-photo.loaded { opacity: 1; }
 
-    /* Hover upload overlay */
-    .avatar-upload-overlay {
+    /* Admin hover overlay — only shown when admin mode is active */
+    .avatar-admin-overlay {
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      background: rgba(10,10,20,0.7);
+      background: rgba(10,10,20,0.75);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
       opacity: 0;
       transition: opacity 0.25s;
       z-index: 3;
       backdrop-filter: blur(4px);
+      cursor: pointer;
     }
-    .hero-avatar:hover .avatar-upload-overlay { opacity: 1; }
+    body.admin-mode .hero-avatar:hover .avatar-admin-overlay { opacity: 1; }
+    body.admin-mode .hero-avatar { cursor: pointer; }
     .upload-icon {
-      width: 48px; height: 48px;
+      width: 44px; height: 44px;
       border: 2px solid var(--accent);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
+      font-size: 18px;
     }
     .upload-label {
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10px;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--accent);
     }
-    .upload-sublabel {
-      font-size: 10px;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-    }
-
-    /* Photo frame ring (shown after photo uploaded) */
-    .avatar-frame-ring {
-      position: absolute;
-      inset: -3px;
-      border-radius: 50%;
-      background: conic-gradient(
-        var(--accent) 0deg,
-        var(--accent2) 120deg,
-        var(--accent3) 240deg,
-        var(--accent) 360deg
-      );
-      z-index: -1;
-      opacity: 0;
-      transition: opacity 0.5s;
-      animation: spin 6s linear infinite;
-    }
-    .avatar-frame-ring.visible { opacity: 1; }
-    /* Mask inner part so only border shows */
-    .avatar-frame-ring::after {
-      content: '';
-      position: absolute;
-      inset: 3px;
-      border-radius: 50%;
-      background: var(--bg2);
-    }
-
-    /* Remove photo button */
-    .avatar-remove {
-      position: absolute;
-      top: 14px; right: 14px;
-      width: 28px; height: 28px;
-      background: rgba(255,50,50,0.85);
-      border: none;
-      border-radius: 50%;
-      color: #fff;
-      font-size: 14px;
-      line-height: 1;
-      cursor: pointer;
-      opacity: 0;
-      transition: opacity 0.2s;
-      z-index: 10;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .hero-visual:hover .avatar-remove.show { opacity: 1; }
+    .upload-sublabel { font-size: 9px; color: var(--muted); }
 
     /* Hidden file input */
     #photoInput { display: none; }
 
+    /* Admin remove button — only visible in admin mode */
+    .avatar-remove {
+      position: absolute;
+      top: 10px; right: 10px;
+      width: 26px; height: 26px;
+      background: rgba(220,50,50,0.9);
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 12px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s;
+      z-index: 10;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    body.admin-mode .avatar-remove { display: flex; }
+    body.admin-mode .hero-visual:hover .avatar-remove.show { opacity: 1; }
+
+    /* Admin unlock button — subtle, bottom-right corner of page */
+    #adminBtn {
+      position: fixed;
+      bottom: 18px; right: 18px;
+      z-index: 500;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: rgba(124,106,255,0.08);
+      border: 1px solid rgba(124,106,255,0.15);
+      color: rgba(124,106,255,0.35);
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    #adminBtn:hover {
+      background: rgba(124,106,255,0.18);
+      color: var(--accent);
+      border-color: rgba(124,106,255,0.4);
+    }
+    body.admin-mode #adminBtn {
+      background: rgba(124,106,255,0.25);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* Admin modal */
+    #adminModal {
+      position: fixed;
+      inset: 0;
+      background: rgba(5,5,10,0.85);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s, visibility 0.25s;
+    }
+    #adminModal.open { opacity: 1; visibility: visible; }
+    .modal-box {
+      background: var(--surface);
+      border: 1px solid rgba(124,106,255,0.25);
+      border-radius: 16px;
+      padding: 40px 36px;
+      width: 340px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(124,106,255,0.1);
+    }
+    .modal-title {
+      font-family: var(--font-head);
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .modal-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+    .modal-input {
+      width: 100%;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 14px;
+    }
+    .modal-input:focus { border-color: var(--accent); }
+    .modal-input.error { border-color: #ff4466; animation: shake 0.3s ease; }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+    .modal-error {
+      font-size: 11px;
+      color: #ff4466;
+      margin-bottom: 14px;
+      display: none;
+    }
+    .modal-error.show { display: block; }
+    .modal-actions { display: flex; gap: 10px; }
+    .modal-btn {
+      flex: 1;
+      padding: 11px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .modal-btn.confirm {
+      background: var(--accent);
+      color: #fff;
+    }
+    .modal-btn.confirm:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(124,106,255,0.35);
+    }
+    .modal-btn.cancel {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .modal-btn.cancel:hover { border-color: var(--muted); color: var(--text); }
+
+    /* Admin mode indicator badge */
+    #adminBadge {
+      position: fixed;
+      top: 80px; right: 18px;
+      z-index: 500;
+      padding: 5px 12px;
+      background: rgba(124,106,255,0.15);
+      border: 1px solid rgba(124,106,255,0.35);
+      border-radius: 100px;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: none;
+      align-items: center;
+      gap: 6px;
+    }
+    #adminBadge::before {
+      content: '';
+      width: 5px; height: 5px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    body.admin-mode #adminBadge { display: flex; }
+
+    /* Stats — positioned below and right, INSIDE the visual, no overflow into left column */
     .hero-stats {
       position: absolute;
-      bottom: -30px; right: -50px;
+      bottom: -52px;
+      right: -52px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
     .stat-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 12px 18px;
+      padding: 10px 16px;
       display: flex;
       align-items: center;
       gap: 12px;
       backdrop-filter: blur(10px);
+      min-width: 120px;
     }
     .stat-num {
       font-family: var(--font-head);
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 800;
       color: var(--accent);
     }
-    .stat-label { font-size: 11px; color: var(--muted); }
+    .stat-label { font-size: 10px; color: var(--muted); }
 
     .scroll-indicator {
       position: absolute;
@@ -676,6 +821,91 @@
     .timeline-company { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
     .timeline-desc { font-size: 13px; color: var(--muted); line-height: 1.8; }
 
+    /* ───── EDUCATION ───── */
+    #education { padding: 120px 60px; }
+    .edu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 60px;
+    }
+    .edu-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 28px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .edu-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .edu-card:hover { border-color: rgba(124,106,255,0.35); transform: translateY(-4px); }
+    .edu-card:hover::before { opacity: 1; }
+    .edu-icon { font-size: 30px; margin-bottom: 16px; }
+    .edu-degree {
+      font-family: var(--font-head);
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .edu-institution {
+      font-size: 12px;
+      color: var(--accent);
+      letter-spacing: 0.06em;
+      margin-bottom: 14px;
+    }
+    .edu-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .edu-badge {
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 100px;
+      border: 1px solid;
+    }
+    .edu-badge.gpa { color: var(--accent3); border-color: rgba(106,255,218,0.3); }
+    .edu-badge.status { color: var(--accent2); border-color: rgba(255,106,158,0.3); }
+    .edu-badge.year { color: var(--muted); border-color: rgba(255,255,255,0.1); }
+
+    /* Skills chips in education */
+    .skills-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .skill-chip {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      padding: 5px 14px;
+      border-radius: 100px;
+      background: rgba(124,106,255,0.08);
+      border: 1px solid rgba(124,106,255,0.2);
+      color: var(--accent);
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .skill-chip:hover {
+      background: rgba(124,106,255,0.18);
+      border-color: rgba(124,106,255,0.5);
+    }
+
+    @media (max-width: 900px) {
+      #education { padding: 80px 24px; }
+      .edu-grid { grid-template-columns: 1fr; }
+    }
+
     /* ───── CONTACT ───── */
     #contact {
       padding: 120px 60px;
@@ -810,30 +1040,63 @@
       #experience { padding: 80px 24px; }
       #contact { grid-template-columns: 1fr; padding: 80px 24px; gap: 40px; }
       footer { padding: 24px; flex-direction: column; gap: 12px; text-align: center; }
+      #adminBtn { bottom: 12px; right: 12px; }
+      #adminBadge { top: 70px; right: 12px; }
     }
   </style>
 </head>
 <body>
 
+<!-- ── LOADER ── -->
 <div id="loader">
   <div class="loader-name">Susan Pokhrel<span style="color:var(--accent)">.</span></div>
   <div class="loader-bar-track"><div class="loader-bar"></div></div>
 </div>
 
+<!-- ── CURSOR ── -->
 <div id="cursor"></div>
 <div id="cursor-ring"></div>
 <canvas id="particles"></canvas>
 
+<!-- ── ADMIN MODAL ── -->
+<div id="adminModal" role="dialog" aria-modal="true" aria-label="Admin login">
+  <div class="modal-box">
+    <div class="modal-title">Admin Access</div>
+    <div class="modal-sub">Enter the admin password to enable photo editing.</div>
+    <input
+      type="password"
+      id="adminPasswordInput"
+      class="modal-input"
+      placeholder="Password"
+      autocomplete="current-password"
+    />
+    <div class="modal-error" id="adminError">Incorrect password. Try again.</div>
+    <div class="modal-actions">
+      <button class="modal-btn cancel" onclick="closeAdminModal()">Cancel</button>
+      <button class="modal-btn confirm" onclick="submitAdminPassword()">Unlock</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── ADMIN BADGE ── -->
+<div id="adminBadge">Admin Mode</div>
+
+<!-- ── ADMIN BUTTON (lock icon, bottom-right corner) ── -->
+<button id="adminBtn" onclick="toggleAdmin()" title="Admin login" aria-label="Admin login">🔒</button>
+
+<!-- ── NAV ── -->
 <nav>
   <a href="#hero" class="nav-logo">SP<span>.</span></a>
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#projects">Projects</a></li>
     <li><a href="#experience">Experience</a></li>
+    <li><a href="#education">Education</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
 </nav>
 
+<!-- ── HERO ── -->
 <section id="hero">
   <div class="hero-left">
     <div class="hero-tag">Available for work</div>
@@ -854,35 +1117,30 @@
 
   <div class="hero-right">
     <div class="hero-visual">
-      <!-- Ambient glow -->
       <div class="avatar-glow"></div>
-      <!-- Spinning orbit rings -->
       <div class="hero-avatar-ring"></div>
       <div class="hero-avatar-ring2"></div>
-      <!-- Gradient border ring (shown after photo upload) -->
       <div class="avatar-frame-ring" id="frameRing"></div>
 
-      <!-- Main avatar — click to upload -->
-      <div class="hero-avatar" id="heroAvatar" onclick="document.getElementById('photoInput').click()" title="Click to upload your photo">
-        <!-- SP initials -->
+      <!-- Avatar circle -->
+      <div class="hero-avatar" id="heroAvatar" onclick="adminAvatarClick()" title="">
         <span class="avatar-initials" id="avatarInitials">SP</span>
-        <!-- Uploaded photo -->
         <img class="avatar-photo" id="avatarPhoto" alt="Susan Pokhrel" />
-        <!-- Hover overlay -->
-        <div class="avatar-upload-overlay">
+        <!-- Admin-only overlay -->
+        <div class="avatar-admin-overlay">
           <div class="upload-icon">⬆</div>
-          <div class="upload-label">Upload Photo</div>
-          <div class="upload-sublabel">JPG, PNG, WEBP</div>
+          <div class="upload-label">Change Photo</div>
+          <div class="upload-sublabel">JPG · PNG · WEBP</div>
         </div>
       </div>
 
       <!-- Hidden file input -->
       <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp,image/gif" />
 
-      <!-- Remove photo button -->
+      <!-- Remove button (admin only) -->
       <button class="avatar-remove" id="removeBtn" onclick="removePhoto(event)" title="Remove photo">✕</button>
 
-      <!-- Stats -->
+      <!-- Stats — safely positioned below-right of the circle -->
       <div class="hero-stats">
         <div class="stat-card">
           <div>
@@ -906,7 +1164,7 @@
   </div>
 </section>
 
-<!-- About -->
+<!-- ── ABOUT ── -->
 <section id="about">
   <div class="about-left reveal">
     <div class="section-label">About Me</div>
@@ -955,7 +1213,7 @@
   </div>
 </section>
 
-<!-- Projects -->
+<!-- ── PROJECTS ── -->
 <section id="projects">
   <div class="projects-header reveal">
     <div>
@@ -1023,7 +1281,7 @@
   </div>
 </section>
 
-<!-- Experience -->
+<!-- ── EXPERIENCE ── -->
 <section id="experience">
   <div class="reveal" style="text-align:center; margin-bottom: 0;">
     <div class="section-label" style="justify-content:center;">Experience</div>
@@ -1054,7 +1312,59 @@
   </div>
 </section>
 
-<!-- Contact -->
+<!-- ── EDUCATION ── -->
+<section id="education">
+  <div class="reveal" style="text-align:center;">
+    <div class="section-label" style="justify-content:center;">Education</div>
+    <h2 class="section-title">My <span class="hl">Background</span></h2>
+  </div>
+  <div class="edu-grid">
+
+    <!-- BCA -->
+    <div class="edu-card reveal">
+      <div class="edu-icon">🎓</div>
+      <div class="edu-degree">Bachelor of Computer Applications (BCA)</div>
+      <div class="edu-institution">Currently Enrolled · 4th Semester</div>
+      <div class="edu-meta">
+        <span class="edu-badge status">In Progress</span>
+      </div>
+    </div>
+
+    <!-- +2 / 12th -->
+    <div class="edu-card reveal">
+      <div class="edu-icon">📘</div>
+      <div class="edu-degree">+2 / 12th Grade</div>
+      <div class="edu-institution">Higher Secondary Education</div>
+      <div class="edu-meta">
+        <span class="edu-badge gpa">GPA 2.94</span>
+        <span class="edu-badge year">Completed</span>
+      </div>
+    </div>
+
+    <!-- Technical Skills — spans full width -->
+    <div class="edu-card reveal" style="grid-column: 1 / -1;">
+      <div class="edu-icon">💻</div>
+      <div class="edu-degree">Technical Skills</div>
+      <div class="edu-institution">Languages & Technologies I Work With</div>
+      <div class="skills-chips">
+        <span class="skill-chip">HTML</span>
+        <span class="skill-chip">CSS</span>
+        <span class="skill-chip">C</span>
+        <span class="skill-chip">Java</span>
+        <span class="skill-chip">React / Next.js</span>
+        <span class="skill-chip">Node.js</span>
+        <span class="skill-chip">TypeScript</span>
+        <span class="skill-chip">PostgreSQL</span>
+        <span class="skill-chip">MongoDB</span>
+        <span class="skill-chip">Docker</span>
+        <span class="skill-chip">Figma</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
 <section id="contact">
   <div class="reveal">
     <div class="section-label">Contact</div>
@@ -1066,6 +1376,7 @@
     <div class="social-links">
       <a href="https://github.com/astronobi02" target="_blank" class="social-link">⌥ GitHub</a>
       <a href="mailto:pokharelsusan16@gmail.com" class="social-link">✉ Email</a>
+      <a href="tel:+9779765648806" class="social-link">📞 +977 9765648806</a>
       <a href="https://www.linkedin.com/in/susan-pokhrel-66b431280" target="_blank" class="social-link">in LinkedIn</a>
       <a href="https://www.instagram.com/susanpokhrl/?hl=en" class="social-link">Instagram</a>
     </div>
@@ -1093,12 +1404,32 @@
 </footer>
 
 <script>
-  // ── Loader
+  // ─────────────────────────────────────────────
+  // ADMIN PASSWORD — change this to your own password
+  // ─────────────────────────────────────────────
+  const ADMIN_PASSWORD = 'susan2026';
+
+  // ─────────────────────────────────────────────
+  // STORAGE KEY for the saved photo
+  // ─────────────────────────────────────────────
+  const PHOTO_KEY = 'sp_avatar_v2';
+
+  // ─────────────────────────────────────────────
+  // STATE
+  // ─────────────────────────────────────────────
+  let adminMode = false;
+
+  // ─────────────────────────────────────────────
+  // LOADER
+  // ─────────────────────────────────────────────
   window.addEventListener('load', () => {
     setTimeout(() => document.getElementById('loader').classList.add('hidden'), 1900);
+    restorePhoto();
   });
 
-  // ── Custom cursor
+  // ─────────────────────────────────────────────
+  // CURSOR
+  // ─────────────────────────────────────────────
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursor-ring');
   let mx = 0, my = 0, rx = 0, ry = 0;
@@ -1112,17 +1443,27 @@
     requestAnimationFrame(animRing);
   })();
   document.querySelectorAll('a, button, .project-card, .about-card, .hero-avatar').forEach(el => {
-    el.addEventListener('mouseenter', () => { cursor.style.width='20px'; cursor.style.height='20px'; ring.style.width='60px'; ring.style.height='60px'; });
-    el.addEventListener('mouseleave', () => { cursor.style.width='12px'; cursor.style.height='12px'; ring.style.width='36px'; ring.style.height='36px'; });
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '20px'; cursor.style.height = '20px';
+      ring.style.width = '60px'; ring.style.height = '60px';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '12px'; cursor.style.height = '12px';
+      ring.style.width = '36px'; ring.style.height = '36px';
+    });
   });
 
-  // ── Particles
+  // ─────────────────────────────────────────────
+  // PARTICLES
+  // ─────────────────────────────────────────────
   const canvas = document.getElementById('particles');
   const ctx = canvas.getContext('2d');
   let W, H, pts = [];
   function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
   resize(); window.addEventListener('resize', resize);
-  for (let i = 0; i < 80; i++) pts.push({ x: Math.random()*1920, y: Math.random()*1080, vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3, r: Math.random()*1.5+0.5 });
+  for (let i = 0; i < 80; i++) {
+    pts.push({ x: Math.random()*1920, y: Math.random()*1080, vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3, r: Math.random()*1.5+0.5 });
+  }
   function drawParticles() {
     ctx.clearRect(0, 0, W, H);
     pts.forEach(p => {
@@ -1143,63 +1484,148 @@
   }
   drawParticles();
 
-  // ── Scroll reveal
+  // ─────────────────────────────────────────────
+  // SCROLL REVEAL
+  // ─────────────────────────────────────────────
   const observer = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
   }, { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-  // ── Photo upload
+  // ─────────────────────────────────────────────
+  // ADMIN MODAL
+  // ─────────────────────────────────────────────
+  const modal = document.getElementById('adminModal');
+  const pwInput = document.getElementById('adminPasswordInput');
+  const pwError = document.getElementById('adminError');
+  const adminBtn = document.getElementById('adminBtn');
+
+  function toggleAdmin() {
+    if (adminMode) {
+      // Lock — exit admin mode
+      adminMode = false;
+      document.body.classList.remove('admin-mode');
+      adminBtn.textContent = '🔒';
+      adminBtn.title = 'Admin login';
+    } else {
+      // Open modal to authenticate
+      openAdminModal();
+    }
+  }
+
+  function openAdminModal() {
+    pwInput.value = '';
+    pwInput.classList.remove('error');
+    pwError.classList.remove('show');
+    modal.classList.add('open');
+    setTimeout(() => pwInput.focus(), 100);
+  }
+
+  function closeAdminModal() {
+    modal.classList.remove('open');
+  }
+
+  function submitAdminPassword() {
+    if (pwInput.value === ADMIN_PASSWORD) {
+      adminMode = true;
+      document.body.classList.add('admin-mode');
+      adminBtn.textContent = '🔓';
+      adminBtn.title = 'Exit admin mode';
+      closeAdminModal();
+    } else {
+      pwInput.classList.add('error');
+      pwError.classList.add('show');
+      pwInput.value = '';
+      setTimeout(() => pwInput.classList.remove('error'), 400);
+    }
+  }
+
+  // Allow pressing Enter in password field
+  pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') submitAdminPassword(); });
+
+  // Close modal on backdrop click
+  modal.addEventListener('click', e => { if (e.target === modal) closeAdminModal(); });
+
+  // Close modal on Escape
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('open')) closeAdminModal(); });
+
+  // ─────────────────────────────────────────────
+  // AVATAR — admin-only upload
+  // ─────────────────────────────────────────────
   const photoInput = document.getElementById('photoInput');
   const avatarPhoto = document.getElementById('avatarPhoto');
   const avatarInitials = document.getElementById('avatarInitials');
   const frameRing = document.getElementById('frameRing');
   const removeBtn = document.getElementById('removeBtn');
+  const heroAvatar = document.getElementById('heroAvatar');
+
+  function adminAvatarClick() {
+    if (!adminMode) return; // Do nothing for regular visitors
+    photoInput.click();
+  }
 
   photoInput.addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
+
+    // Compress / resize before saving to keep localStorage size manageable
     const reader = new FileReader();
     reader.onload = function(ev) {
-      avatarPhoto.src = ev.target.result;
-      avatarPhoto.onload = function() {
-        avatarPhoto.classList.add('loaded');
-        avatarInitials.style.opacity = '0';
-        frameRing.classList.add('visible');
-        removeBtn.classList.add('show');
-        // Save to localStorage for persistence
-        try { localStorage.setItem('sp_avatar', ev.target.result); } catch(e) {}
+      const img = new Image();
+      img.onload = function() {
+        // Resize to max 600×600 to avoid storage quota issues
+        const MAX = 600;
+        const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+        const w = Math.round(img.width * scale);
+        const h = Math.round(img.height * scale);
+        const cvs = document.createElement('canvas');
+        cvs.width = w; cvs.height = h;
+        const c = cvs.getContext('2d');
+        c.drawImage(img, 0, 0, w, h);
+        const dataUrl = cvs.toDataURL('image/jpeg', 0.88);
+        applyPhoto(dataUrl);
+        try { localStorage.setItem(PHOTO_KEY, dataUrl); } catch(err) {
+          console.warn('Storage quota exceeded — photo will not persist on reload.', err);
+        }
       };
+      img.src = ev.target.result;
     };
     reader.readAsDataURL(file);
     photoInput.value = '';
   });
+
+  function applyPhoto(src) {
+    avatarPhoto.src = src;
+    avatarPhoto.onload = function() {
+      avatarPhoto.classList.add('loaded');
+      avatarInitials.style.opacity = '0';
+      frameRing.classList.add('visible');
+      heroAvatar.classList.add('has-photo');
+      removeBtn.classList.add('show');
+    };
+  }
 
   function removePhoto(e) {
     e.stopPropagation();
     avatarPhoto.classList.remove('loaded');
     avatarInitials.style.opacity = '1';
     frameRing.classList.remove('visible');
+    heroAvatar.classList.remove('has-photo');
     removeBtn.classList.remove('show');
     avatarPhoto.src = '';
-    try { localStorage.removeItem('sp_avatar'); } catch(e) {}
+    try { localStorage.removeItem(PHOTO_KEY); } catch(err) {}
   }
 
-  // Restore saved photo on load
-  try {
-    const saved = localStorage.getItem('sp_avatar');
-    if (saved) {
-      avatarPhoto.src = saved;
-      avatarPhoto.onload = function() {
-        avatarPhoto.classList.add('loaded');
-        avatarInitials.style.opacity = '0';
-        frameRing.classList.add('visible');
-        removeBtn.classList.add('show');
-      };
-    }
-  } catch(e) {}
+  function restorePhoto() {
+    try {
+      const saved = localStorage.getItem(PHOTO_KEY);
+      if (saved) applyPhoto(saved);
+    } catch(err) {}
+  }
 
-  // ── Contact form
+  // ─────────────────────────────────────────────
+  // CONTACT FORM
+  // ─────────────────────────────────────────────
   function handleSend(btn) {
     btn.textContent = 'Sending...';
     setTimeout(() => { btn.textContent = 'Message Sent ✓'; btn.style.background = '#2ecc71'; }, 1200);
